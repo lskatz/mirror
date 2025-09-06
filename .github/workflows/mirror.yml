@@ -1,8 +1,6 @@
 name: Download FTP Folder and Upload Artifact
 
 on:
-  schedule:
-    - cron: '0 6 * * 0'
   push:
     branches:
       - main
@@ -24,4 +22,3 @@ jobs:
         with:
           name: ${{ env.local }}
           path: ${{ env.local }}
-          
