@@ -1,0 +1,27 @@
+name: Download FTP Folder and Upload Artifact
+
+on:
+  schedule:
+    - cron: '0 6 * * 0'
+  push:
+    branches:
+      - main
+
+jobs:
+  ncbi-taxonomy:
+    env:
+      URL: https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
+      dir: ncbi-taxonomy
+      local: ${{ github.workspace }}/taxdump.tar.gz
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Download folder from FTP
+        run: |
+          curl $URL > $local
+
+      - name: Upload folder as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.local }}
+          path: ${{ env.local }}
+          
