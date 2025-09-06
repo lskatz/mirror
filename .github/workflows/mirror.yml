@@ -1,9 +1,11 @@
-name: Download FTP Folder and Upload Artifact
+name: Download and then Upload Artifact
 
 on:
   push:
     branches:
-      - main
+      - master
+  schedule:
+    - cron: '0 6 * * 0'
 
 jobs:
   ncbi-taxonomy:
