@@ -6,8 +6,8 @@ layout: default
 ---
 
 {%- for item in site.data.navigation.main -%}
-  <a href="{{ item.url }}">{{ item.title }}</a>
-{%- endfor -%}
+  <a href="{{ item.url }}">{{ item.title }}</a> . 
+{%- endfor -%} <br />
 
 The mirroring is triggered every sunday, every time there is a git push event, and every time a github issue is placed in the `mirror` repo.
 
