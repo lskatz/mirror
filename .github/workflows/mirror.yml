@@ -30,6 +30,7 @@ jobs:
           echo "DOES THIS WORK?  curl ${{ env.taxonomy_url_src }} > ${{ env.taxonomy_local_site }}"
       - name: Download taxonomy from NCBI FTP
         run: |
+          mkdir -pv $(dirname ${{ env.taxonomy_local_site }})
           curl ${{ env.taxonomy_url_src }} > ${{ env.taxonomy_local_site }}
 
       - name: Upload artifact
