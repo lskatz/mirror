@@ -15,24 +15,24 @@ concurrency:
 
 env:
   taxonomy_url_src: https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
-  taxonomy_local_src: ${{ github.workspace }}/taxdump.tar.gz
   taxonomy_local_site: ${{ github.workspace }}/_site/taxdump.tar.gz
 
 jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Download taxonomy from NCBI FTP
         run: |
-          curl ${{ env.taxonomy_url_src }} > ${{ env.taxonomy_local_src }}
+          curl ${{ env.taxonomy_url_src }} > ${{ env.taxonomy_local_site }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
             name: taxdump.tar.gz
-            path: ${{ env.taxonomy_local_src }}
-      - name: Checkout
-        uses: actions/checkout@v4
+            path: ${{ env.taxonomy_local_site }}
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Build with Jekyll
@@ -45,10 +45,6 @@ jobs:
       - name: check files
         run: |
           ls -lhRt ${{ github.workspace }}
-      # copy the ncbi taxonomy gz file from the previous job
-      - name: Copy NCBI taxonomy artifact
-        run: |
-          cp -v ${{ env.taxonomy_local_src }} ${{ env.taxonomy_local_site }}
 
   # Deployment job
   deploy:
