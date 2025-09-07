@@ -13,40 +13,26 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
+env:
+  taxonomy_url_src: https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
+  taxonomy_local_src: ${{ github.workspace }}/taxdump.tar.gz
+  taxonomy_local_site: ${{ github.workspace }}/_site/taxdump.tar.gz
+
 jobs:
   ncbi-taxonomy:
-    env:
-      URL: https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
-      filename: taxdump.tar.gz
-      localpath: ${{ github.workspace }}/taxdump.tar.gz
     runs-on: ubuntu-22.04
     steps:
       - name: install jq
         run: sudo apt-get install -y jq
       - name: Download folder from FTP
         run: |
-          curl $URL > $localpath
+          curl ${{ env.taxonomy_url_src }} > ${{ env.taxonomy_local_src }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
             name: taxdump.tar.gz
-            path: ${{ env.localpath }}
-      - name: Get artifact path
-        id: get_artifact_path
-        run: echo "localpath=${{ env.localpath }}" >> $GITHUB_OUTPUT
-      - name: Get artifact URL
-        id: get_artifact_url
-        run: |
-          ARTIFACT_NAME=${{ env.filename }}
-          RUN_ID="${{ github.run_id }}"
-          REPO="${{ github.repository }}"
-          TOKEN="${{ secrets.GITHUB_TOKEN }}"
-          API_URL="https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/artifacts"
-          ARTIFACT_ID=$(curl -s -H "Authorization: token $TOKEN" $API_URL | jq -r ".artifacts[] | select(.name==\"$ARTIFACT_NAME\") | .id")
-          ARTIFACT_URL="https://github.com/$REPO/actions/artifacts/$ARTIFACT_ID"
-          echo "Artifact URL: $ARTIFACT_URL"
-          echo "artifact_url=$ARTIFACT_URL" >> $GITHUB_OUTPUT
+            path: ${{ env.taxonomy_local_src }}
 
   build:
     runs-on: ubuntu-22.04
@@ -66,8 +52,7 @@ jobs:
       # copy the ncbi taxonomy gz file from the previous job
       - name: Copy NCBI taxonomy artifact
         run: |
-          ARTIFACT_PATH="${{ needs.ncbi-taxonomy.outputs.localpath }}"
-          cp $ARTIFACT_PATH ./_site/
+          cp -v ${{ env.taxonomy_local_src }} ${{ env.taxonomy_local_site }}
 
   # Deployment job
   deploy:
