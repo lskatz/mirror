@@ -22,8 +22,6 @@ jobs:
   ncbi-taxonomy:
     runs-on: ubuntu-22.04
     steps:
-      - name: install jq
-        run: sudo apt-get install -y jq
       - name: Download folder from FTP
         run: |
           curl ${{ env.taxonomy_url_src }} > ${{ env.taxonomy_local_src }}
