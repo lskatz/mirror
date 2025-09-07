@@ -18,11 +18,10 @@ env:
   taxonomy_local_src: ${{ github.workspace }}/taxdump.tar.gz
   taxonomy_local_site: ${{ github.workspace }}/_site/taxdump.tar.gz
 
-jobs:
-  ncbi-taxonomy:
+  build:
     runs-on: ubuntu-22.04
     steps:
-      - name: Download folder from FTP
+      - name: Download taxonomy from NCBI FTP
         run: |
           curl ${{ env.taxonomy_url_src }} > ${{ env.taxonomy_local_src }}
       - name: check files
@@ -34,14 +33,6 @@ jobs:
         with:
             name: taxdump.tar.gz
             path: ${{ env.taxonomy_local_src }}
-
-  build:
-    runs-on: ubuntu-22.04
-    needs: ncbi-taxonomy
-    steps:
-      - name: check files
-        run: |
-          ls -lhRt
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Pages
