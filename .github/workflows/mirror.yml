@@ -34,11 +34,17 @@ jobs:
       - name: check files
         run: |
           ls -lhRt ${{ github.workspace }}
-          echo "DOES THIS WORK?  curl ${{ env.taxonomy_url_src }} > ${{ env.taxonomy_local_site }}"
       - name: Download taxonomy from NCBI FTP
         run: |
           mkdir -pv $(dirname ${{ env.taxonomy_local_site }})
           curl ${{ env.taxonomy_url_src }} > ${{ env.taxonomy_local_site }}
+      - name: Record taxdump download time
+        run: |
+          mkdir -pv _data
+          echo "last_download: \"$(date -u +"%Y-%m-%d %H:%M:%S UTC")\"" > _data/taxdump_download.yml
+          echo "local_path: \"${{ env.taxonomy_local_site }}\"" >> _data/taxdump_download.yml
+          echo "remote_url: \"${{ env.taxonomy_url_src }}\"" >> _data/taxdump_download.yml
+          cat _data/taxdump_download.yml
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
