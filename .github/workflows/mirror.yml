@@ -25,6 +25,9 @@ jobs:
       - name: Download folder from FTP
         run: |
           curl ${{ env.taxonomy_url_src }} > ${{ env.taxonomy_local_src }}
+      - name: check files
+        run: |
+          ls -lhRt
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -36,6 +39,9 @@ jobs:
     runs-on: ubuntu-22.04
     needs: ncbi-taxonomy
     steps:
+      - name: check files
+        run: |
+          ls -lhRt
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Pages
