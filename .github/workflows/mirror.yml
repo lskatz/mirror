@@ -33,6 +33,7 @@ jobs:
             name: taxdump.tar.gz
             path: ${{ env.localpath }}
       - name: Get artifact URL
+        id: get_artifact_url
         run: |
           ARTIFACT_NAME=${{ env.filename }}
           RUN_ID="${{ github.run_id }}"
@@ -62,7 +63,7 @@ jobs:
       # copy the ncbi taxonomy gz file from the previous job
       - name: Copy NCBI taxonomy artifact
         run: |
-          ARTIFACT_URL="${{ needs.ncbi-taxonomy.outputs.artifact_url }}"
+          ARTIFACT_URL=${{ needs.ncbi-taxonomy.steps.get_artifact_url.outputs.artifact_url }}
           echo "Downloading artifact from $ARTIFACT_URL"
           curl -L -o ./_site/taxdump.tar.gz $ARTIFACT_URL
 
