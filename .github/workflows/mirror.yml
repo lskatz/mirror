@@ -20,7 +20,7 @@ permissions:
 
 env:
   taxonomy_url_src: https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
-  taxonomy_local_site: ${{ github.workspace }}/_site/taxdump.tar.gz
+  taxonomy_local_site: ${{ github.workspace }}/_site/assets/taxdump.tar.gz
 
 jobs:
   build:
