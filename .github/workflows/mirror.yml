@@ -24,6 +24,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: check files
+        run: |
+          ls -lhRt ${{ github.workspace }}
+          echo "DOES THIS WORK?  curl ${{ env.taxonomy_url_src }} > ${{ env.taxonomy_local_site }}"
       - name: Download taxonomy from NCBI FTP
         run: |
           curl ${{ env.taxonomy_url_src }} > ${{ env.taxonomy_local_site }}
@@ -42,9 +46,6 @@ jobs:
           destination: ./_site
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
-      - name: check files
-        run: |
-          ls -lhRt ${{ github.workspace }}
 
   # Deployment job
   deploy:
