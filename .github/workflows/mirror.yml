@@ -25,9 +25,6 @@ jobs:
       - name: Download taxonomy from NCBI FTP
         run: |
           curl ${{ env.taxonomy_url_src }} > ${{ env.taxonomy_local_src }}
-      - name: check files
-        run: |
-          ls -lhRt
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -45,6 +42,9 @@ jobs:
           destination: ./_site
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+      - name: check files
+        run: |
+          ls -lhRt ${{ github.workspace }}
       # copy the ncbi taxonomy gz file from the previous job
       - name: Copy NCBI taxonomy artifact
         run: |
