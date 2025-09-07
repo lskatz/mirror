@@ -9,6 +9,8 @@ layout: page
   <a href="{{ item.url }}">{{ item.title }}</a>
 {% endfor %}
 
-| name | file | src mirror | cadence |
-| ---- | ---- | ---------- | ------- |
-| NCBI Taxonomy | [taxdump.tar.gz]({{ site.baseurl }}/assets/taxdump.tar.gz) | <https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz> | On git push and every Sunday |
+The mirroring is triggered every sunday, every time there is a git push event, and every time a github issue is placed in the `mirror` repo.
+
+| name | file | src mirror |
+| ---- | ---- | ---------- |
+| NCBI Taxonomy | [taxdump.tar.gz]({{ site.baseurl }}/assets/taxdump.tar.gz) | <https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz> |
