@@ -5,7 +5,7 @@
 layout: default
 ---
 
-{% for item in site.data.navigation %}
+{% for item in site.data.navigation.main %}
   <a href="{{ item.url }}">{{ item.title }}</a>
 {% endfor %}
 
