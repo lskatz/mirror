@@ -13,6 +13,11 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 env:
   taxonomy_url_src: https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
   taxonomy_local_site: ${{ github.workspace }}/_site/taxdump.tar.gz
