@@ -32,6 +32,9 @@ jobs:
         with:
             name: taxdump.tar.gz
             path: ${{ env.localpath }}
+      - name: Get artifact path
+        id: get_artifact_path
+        run: echo "localpath=${{ env.localpath }}" >> $GITHUB_OUTPUT
       - name: Get artifact URL
         id: get_artifact_url
         run: |
@@ -63,9 +66,8 @@ jobs:
       # copy the ncbi taxonomy gz file from the previous job
       - name: Copy NCBI taxonomy artifact
         run: |
-          ARTIFACT_URL=${{ needs.ncbi-taxonomy.steps.get_artifact_url.outputs.artifact_url }}
-          echo "Downloading artifact from $ARTIFACT_URL"
-          curl -L -o ./_site/taxdump.tar.gz $ARTIFACT_URL
+          ARTIFACT_PATH="${{ needs.ncbi-taxonomy.outputs.localpath }}"
+          cp $ARTIFACT_PATH ./_site/
 
   # Deployment job
   deploy:
