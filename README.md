@@ -10,3 +10,4 @@ The download will be labeled as an artifact.
 | name | github mirror | cadence |
 | ---- | ------------- | ------- |
 | NCBI Taxonomy | <https://github.com/lskatz/mirror/actions/workflows/mirror.yml> | On git push and every Sunday |
+| PubMLST dbases.xml | <https://github.com/lskatz/mirror/actions/workflows/pubmlst-dbases.yml> | On git push and every Sunday |
