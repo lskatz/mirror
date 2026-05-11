@@ -1,4 +1,4 @@
-name: Download and then Upload Artifact
+name: Mirror and Deploy
 
 on:
   push:
@@ -21,8 +21,11 @@ permissions:
   id-token: write
 
 env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   taxonomy_url_src: https://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
   taxonomy_local_site: ${{ github.workspace }}/assets/taxdump.tar.gz
+  dbases_url_src: https://pubmlst.org/data/dbases.xml
+  dbases_local_site: ${{ github.workspace }}/assets/dbases.xml
 
 jobs:
   build:
@@ -31,34 +34,55 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: check files
+      - name: Check files
         run: |
           ls -lhRt ${{ github.workspace }}
+
       - name: Download taxonomy from NCBI FTP
         run: |
           mkdir -pv $(dirname ${{ env.taxonomy_local_site }})
-          curl ${{ env.taxonomy_url_src }} > ${{ env.taxonomy_local_site }}
-      - name: Record taxdump download time
+          curl -fsSL ${{ env.taxonomy_url_src }} > ${{ env.taxonomy_local_site }}
+
+      - name: Download dbases XML from PubMLST
+        run: |
+          mkdir -pv $(dirname ${{ env.dbases_local_site }})
+          curl -fsSL ${{ env.dbases_url_src }} > ${{ env.dbases_local_site }}
+
+      - name: Record download times
         run: |
           mkdir -pv _data
-          echo "last_download: \"$(date -u +"%Y-%m-%d %H:%M:%S UTC")\"" > _data/taxdump_download.yml
+          DOWNLOAD_TIME="$(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+          echo "last_download: \"${DOWNLOAD_TIME}\"" > _data/taxdump_download.yml
           echo "local_path: \"${{ env.taxonomy_local_site }}\"" >> _data/taxdump_download.yml
           echo "remote_url: \"${{ env.taxonomy_url_src }}\"" >> _data/taxdump_download.yml
           cat _data/taxdump_download.yml
+          echo "last_download: \"${DOWNLOAD_TIME}\"" > _data/dbases_download.yml
+          echo "local_path: \"${{ env.dbases_local_site }}\"" >> _data/dbases_download.yml
+          echo "remote_url: \"${{ env.dbases_url_src }}\"" >> _data/dbases_download.yml
+          cat _data/dbases_download.yml
 
-      - name: Upload artifact
+      - name: Upload taxdump artifact
         uses: actions/upload-artifact@v4
         with:
-            name: taxdump.tar.gz
-            path: ${{ env.taxonomy_local_site }}
+          name: taxdump.tar.gz
+          path: ${{ env.taxonomy_local_site }}
+
+      - name: Upload dbases artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbases.xml
+          path: ${{ env.dbases_local_site }}
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
           source: ./
           destination: ./_site
-      - name: Upload artifact
+
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
 
   # Deployment job
